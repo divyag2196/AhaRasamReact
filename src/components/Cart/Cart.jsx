@@ -10,7 +10,7 @@ const Cart = () => {
   const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
-    <div className="cart-container container-fluid">
+    <div className="cart-container container-fluid p-0">
       <div className="navbg"></div>
       <div className="container">
         <h2>Your Cart</h2>
