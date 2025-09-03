@@ -41,7 +41,7 @@ const Products = () => {
       return;
     }
 
-    product.Variant.forEach((v, idx) => {
+    product.Variants.forEach((v, idx) => {
       const qty = selected[idx] || 0;
       if (qty > 0) {
         addToCart({
@@ -66,8 +66,12 @@ const Products = () => {
 
       <div className="grid products-container d-flex">
         {products.map((product) => {
-          // ✅ Image (full URL already in Strapi response)
-          const imgUrl = product.Image?.url || "https://placehold.co/300";
+          // const p = product.attributes;
+
+          // ✅ Fetch image URL from Strapi
+          const imgUrl = product.pImage?.url
+            ? `${process.env.REACT_APP_DEV_URL}${product.pImage.url}`
+            : "https://placehold.co/300";
 
           return (
             <div key={product.id} className="product-card">
@@ -77,7 +81,7 @@ const Products = () => {
               <img src={imgUrl} alt={product.Title} width="300" />
 
               {/* ✅ Variants Section */}
-              {product.Variant?.map((v, idx) => (
+              {product.Variants?.map((v, idx) => (
                 <div key={idx} className="variant-row">
                   <span>
                     {v.size} – ₹{v.price}
@@ -109,10 +113,10 @@ const Products = () => {
               )}
 
               {/* ✅ Preparation Steps Section */}
-              {product.HOWTOPREPAREAHARASAM?.length > 0 && (
+              {product.PreparationSteps?.length > 0 && (
                 <div className="howto">
                   <h4>How to Prepare</h4>
-                  {product.HOWTOPREPAREAHARASAM.map((block, i) => (
+                  {product.PreparationSteps.map((block, i) => (
                     <ul key={i}>
                       {block.children?.map((li, j) => (
                         <li key={j}>{li.children?.[0]?.text}</li>
