@@ -70,7 +70,7 @@ const Products = () => {
           const imgUrl = product.Image?.url || "https://placehold.co/300";
 
           return (
-            <div key={product.id} className="product-card col-12 col-lg-6">
+            <div key={product.id} className="product-card col-12 col-lg-4">
               <h3>{product.Title}</h3>
 
               {/* ✅ Display product image */}
@@ -98,7 +98,7 @@ const Products = () => {
 
               {/* ✅ Ingredients Section */}
               {product.Ingredients?.length > 0 && (
-                <div className="ingredients">
+                <div className="ingredients text-start">
                   <h4>Ingredients</h4>
                   {product.Ingredients.map((block, i) =>
                     block.children?.map((c, j) => (
@@ -110,7 +110,7 @@ const Products = () => {
 
               {/* ✅ Preparation Steps Section */}
               {product.HOWTOPREPAREAHARASAM?.length > 0 && (
-                <div className="howto">
+                <div className="howto text-start">
                   <h4>How to Prepare</h4>
                   {product.HOWTOPREPAREAHARASAM.map((block, i) => (
                     <ul key={i}>
