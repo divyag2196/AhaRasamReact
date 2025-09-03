@@ -64,13 +64,13 @@ const Products = () => {
     <div className="products-grid container">
       <h2>Products</h2>
 
-      <div className="grid products-container d-flex">
+      <div className="products-container d-flex flex-wrap">
         {products.map((product) => {
           // ✅ Image (full URL already in Strapi response)
           const imgUrl = product.Image?.url || "https://placehold.co/300";
 
           return (
-            <div key={product.id} className="product-card col-md-6">
+            <div key={product.id} className="product-card col-12 col-lg-6">
               <h3>{product.Title}</h3>
 
               {/* ✅ Display product image */}
