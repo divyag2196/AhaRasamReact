@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import CheckoutPopup from "../Checkout/CheckoutPopup";
 import { CartContext } from "../../context/CartContext";
+import "./Cart.scss";
 
 const Cart = () => {
   const { cart, removeFromCart } = useContext(CartContext);
