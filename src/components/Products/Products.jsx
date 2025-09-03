@@ -70,7 +70,7 @@ const Products = () => {
           const imgUrl = product.Image?.url || "https://placehold.co/300";
 
           return (
-            <div key={product.id} className="product-card">
+            <div key={product.id} className="product-card col-md-6">
               <h3>{product.Title}</h3>
 
               {/* ✅ Display product image */}
