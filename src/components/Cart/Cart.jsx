@@ -10,6 +10,7 @@ const Cart = () => {
 
   return (
     <div className="cart-container container-fluid">
+      <div className="navbg"></div>
       <div className="container">
         <h2>Your Cart</h2>
         {cart.length === 0 ? (
