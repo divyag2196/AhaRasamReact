@@ -30,7 +30,7 @@ const MyHeader = () => {
         scrollnav ? "sticky-nav" : ""
       }`}
     >
-      <div className="container-fluid">
+      <div className="container-fluid p-0">
         <a className="navbar-brand d-md-none" href="/">
           <img src={logo} alt="" />
         </a>
