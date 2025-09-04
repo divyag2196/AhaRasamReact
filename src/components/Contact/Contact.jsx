@@ -27,10 +27,15 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1337/api/contacts", form );
+      // ✅ Strapi v5 expects { data: {...} }
+      const res = await axios.post("https://YOUR_STRAPI_URL/api/contacts", {
+        data: {
+          ...form,
+          publishedAt: new Date().toISOString(), // ensures auto-publish
+        },
+      });
 
-        // await axios.post("http://localhost:1337/api/contacts", 
-        // { data:form });
+      console.log("Saved in Strapi:", res.data);
 
       setModal({
         show: true,
@@ -41,6 +46,7 @@ function Contact() {
 
       setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
     } catch (error) {
+      console.error("Save failed:", error.response?.data || error.message);
       setModal({
         show: true,
         success: false,
