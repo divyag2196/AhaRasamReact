@@ -1,8 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import Modal from "../Modal/Modal";
 import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    action: "buy",
+    message: "",
+  });
+
+  const [modal, setModal] = useState({
+    show: false,
+    success: false,
+    title: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:1337/api/contacts", form );
+
+        // await axios.post("http://localhost:1337/api/contacts", 
+        // { data:form });
+
+      setModal({
+        show: true,
+        success: true,
+        title: "Message Sent 🎉",
+        message: "Thank you! Your enquiry has been saved.",
+      });
+
+      setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
+    } catch (error) {
+      setModal({
+        show: true,
+        success: false,
+        title: "Oops!",
+        message: "Something went wrong. Please try again later.",
+      });
+    }
+  };
+
   return (
     <section className="contact-section" id="Contact">
       <div className="container">
@@ -13,41 +60,79 @@ function Contact() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </p>
 
-          <form className="contact-form">
+          <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" id="name" required placeholder="Name " />
-              {/* <label htmlFor="name">Name</label> */}
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+                placeholder="Name"
+              />
             </div>
 
             <div className="form-group">
-              <input type="email" id="email" required placeholder="Email Id " />
-              {/* <label htmlFor="email">Email Id</label> */}
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                placeholder="Email Id"
+              />
             </div>
 
             <div className="form-group">
-              <input type="tel" id="phone" required placeholder="Phone no. " />
-              {/* <label htmlFor="phone">Phone no.</label> */}
+              <input
+                type="tel"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                placeholder="Phone no."
+              />
             </div>
 
             <div className="form-group radio-group">
               <label>Want to</label>
               <label>
-                <input type="radio" name="action" value="buy" defaultChecked />{" "}
+                <input
+                  type="radio"
+                  name="action"
+                  value="buy"
+                  checked={form.action === "buy"}
+                  onChange={handleChange}
+                />
                 <span> Buy </span>
               </label>
               <label>
-                <input type="radio" name="action" value="sell" /> <span> Sell </span>
+                <input
+                  type="radio"
+                  name="action"
+                  value="sell"
+                  checked={form.action === "sell"}
+                  onChange={handleChange}
+                />
+                <span> Sell </span>
               </label>
             </div>
 
             <div className="form-group">
-              <textarea id="message" required placeholder="Write here "></textarea>
-              {/* <label htmlFor="message">Write here</label> */}
+              <textarea
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                required
+                placeholder="Write here"
+              />
             </div>
+
             <div className="btn-container">
-                <button type="submit" className="btn-submit"> Submit </button>
+              <button type="submit" className="btn-submit">
+                Submit
+              </button>
             </div>
-            
           </form>
         </div>
 
@@ -64,6 +149,15 @@ function Contact() {
           </p>
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal
+        show={modal.show}
+        success={modal.success}
+        title={modal.title}
+        message={modal.message}
+        onClose={() => setModal({ ...modal, show: false })}
+      />
     </section>
   );
 }
