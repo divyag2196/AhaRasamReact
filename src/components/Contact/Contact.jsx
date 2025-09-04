@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Modal from "../Modal/Modal";
+import Modal from "../Modal/Modal"; // Make sure you have your Modal component
 import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
-  // Form state
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -14,7 +13,6 @@ function Contact() {
     message: "",
   });
 
-  // Modal state
   const [modal, setModal] = useState({
     show: false,
     success: false,
@@ -22,17 +20,16 @@ function Contact() {
     message: "",
   });
 
-  // Update form state on input change
+  // Update state on input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  // Form submission
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate required fields
     if (!form.name || !form.email || !form.message) {
       setModal({
         show: true,
@@ -43,7 +40,7 @@ function Contact() {
       return;
     }
 
-    // Prepare payload for Strapi v5
+    // Payload for Strapi Cloud v5
     const payload = {
       data: {
         name: form.name,
@@ -55,12 +52,19 @@ function Contact() {
       },
     };
 
-    console.log("Sending payload to Strapi:", payload); // ✅ log payload
+    console.log("Sending payload to Strapi:", payload);
 
     try {
       const res = await axios.post(
         "https://beautiful-festival-b6c8d86f22.strapiapp.com/api/contacts",
-        payload
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer fb4f79cc58081c6ccc735d86a012f47217ceb6e25bece384533b3c5a2281796bc6cd836cfdb6dcd94ed83d59461c2bda92694ef2ef538472895c3fb4e76e9580cecafdfd59cc83fc812fadc5cbb55b3651df9c5a64d7bc6f4071543a9478cb2a90e00f39878eafe15dabcb8e21a84447929f654af52b001385007348a0563713",
+          },
+        }
       );
 
       console.log("Response from Strapi:", res.data);
