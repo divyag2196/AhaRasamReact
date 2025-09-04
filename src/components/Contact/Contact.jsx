@@ -28,7 +28,7 @@ function Contact() {
     e.preventDefault();
     try {
       // ✅ Strapi v5 expects { data: {...} }
-      const res = await axios.post("https://YOUR_STRAPI_URL/api/contacts", {
+      const res = await axios.post("https://beautiful-festival-b6c8d86f22.strapiapp.com/api/contacts", {
         data: {
           ...form,
           publishedAt: new Date().toISOString(), // ensures auto-publish
