@@ -82,18 +82,30 @@ const Products = () => {
                   <span>
                     {v.size} – ₹{v.price}
                   </span>
-                  <button onClick={() => handleQtyChange(product.id, idx, -1)}>
+                  <button className="trash-btn">🗑</button>
+                  <button
+                    className="qty-btn"
+                    onClick={() => handleQtyChange(product.id, idx, -1)}
+                  >
                     -
                   </button>
-                  <span>{quantities[product.id]?.[idx] || 0}</span>
-                  <button onClick={() => handleQtyChange(product.id, idx, 1)}>
+                  <span className="qty-value">
+                    {quantities[product.id]?.[idx] || 0}
+                  </span>
+                  <button
+                    className="qty-btn"
+                    onClick={() => handleQtyChange(product.id, idx, 1)}
+                  >
                     +
                   </button>
                 </div>
               ))}
 
-              <button onClick={() => handleAddToCart(product.id, product)}>
-                Add to Cart
+              <button
+                className="proceed-btn"
+                onClick={() => handleAddToCart(product.id, product)}
+              >
+                Proceed to Pay
               </button>
 
               {/* ✅ Ingredients Section */}
