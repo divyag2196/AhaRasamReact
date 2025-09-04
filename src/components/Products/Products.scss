@@ -71,9 +71,14 @@
         }
       }
 
+      .varqty-sec{
+        display: flex;
+        align-items: center;
+      }
+
       .qty-btn {
         background: #E1AD3F;
-        // border: 1px solid #ddd;
+        border: 0px solid #ddd;
         border-radius: 6px;
         width: 32px;
         height: 32px;

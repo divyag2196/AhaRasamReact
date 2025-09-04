@@ -64,7 +64,7 @@ const Products = () => {
     <div className="products-grid container">
       <h2>Products</h2>
 
-      <div className="products-container d-flex ">
+      <div className="products-container d-flex justify-content-center ">
         {products.map((product) => {
           // ✅ Image (full URL already in Strapi response)
           const imgUrl = product.Image?.url || "https://placehold.co/300";
@@ -86,7 +86,7 @@ const Products = () => {
                   <span>
                     {v.size} – ₹{v.price}
                   </span> */}
-                  <div>
+                  <div className="d-flex">
                     <button className="trash-btn">🗑</button>
                     <div className="varqty-sec">
                       <button
