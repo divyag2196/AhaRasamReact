@@ -5,6 +5,7 @@ import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
+  // Form state
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -13,6 +14,7 @@ function Contact() {
     message: "",
   });
 
+  // Modal state
   const [modal, setModal] = useState({
     show: false,
     success: false,
@@ -20,16 +22,17 @@ function Contact() {
     message: "",
   });
 
-  // Handle input changes
+  // Update form state on input change
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
-  // Handle form submit
+  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
+    // Validate required fields
     if (!form.name || !form.email || !form.message) {
       setModal({
         show: true,
@@ -40,24 +43,28 @@ function Contact() {
       return;
     }
 
+    // Prepare payload for Strapi v5
+    const payload = {
+      data: {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        action: form.action,
+        message: form.message,
+        publishedAt: new Date().toISOString(), // auto-publish
+      },
+    };
+
+    console.log("Sending payload to Strapi:", payload); // ✅ log payload
+
     try {
       const res = await axios.post(
         "https://beautiful-festival-b6c8d86f22.strapiapp.com/api/contacts",
-        {
-          data: {
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            action: form.action,
-            message: form.message,
-            publishedAt: new Date().toISOString(), // auto-publish
-          },
-        }
+        payload
       );
 
-      console.log("Saved in Strapi:", res.data);
+      console.log("Response from Strapi:", res.data);
 
-      // Show success modal
       setModal({
         show: true,
         success: true,
@@ -96,8 +103,8 @@ function Contact() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                required
                 placeholder="Name"
+                required
               />
             </div>
 
@@ -107,8 +114,8 @@ function Contact() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                required
                 placeholder="Email Id"
+                required
               />
             </div>
 
@@ -151,8 +158,8 @@ function Contact() {
                 name="message"
                 value={form.message}
                 onChange={handleChange}
-                required
                 placeholder="Write here"
+                required
               />
             </div>
 
