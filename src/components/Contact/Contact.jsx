@@ -5,12 +5,13 @@ import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
+  // Make sure these match your Strapi collection field names exactly
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    action: "buy",
-    message: "",
+    Name: "",
+    Email: "",
+    PhoneNumber: "",
+    Action: "buy",
+    Message: "",
   });
 
   const [modal, setModal] = useState({
@@ -28,8 +29,7 @@ function Contact() {
   };
 
   const validateForm = () => {
-    // Ensure required fields are not empty
-    return form.name.trim() && form.email.trim() && form.message.trim();
+    return form.Name.trim() && form.Email.trim() && form.Message.trim();
   };
 
   const handleSubmit = async (e) => {
@@ -45,18 +45,16 @@ function Contact() {
       return;
     }
 
-    // Correct payload for Strapi v5
     const payload = {
       data: {
-        name: form.name,
-        email: form.email,
-        phone: form.phone || "",
-        action: form.action,
-        message: form.message,
+        Name: form.Name,
+        Email: form.Email,
+        PhoneNumber: form.PhoneNumber || "",
+        Action: form.Action,
+        Message: form.Message,
       },
     };
 
-    // Log payload for verification
     console.log("Sending payload to Strapi:", JSON.stringify(payload, null, 2));
 
     setLoading(true);
@@ -83,8 +81,7 @@ function Contact() {
         message: "Thank you! Your enquiry has been saved.",
       });
 
-      // Reset form
-      setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
+      setForm({ Name: "", Email: "", PhoneNumber: "", Action: "buy", Message: "" });
     } catch (error) {
       console.error("Error saving contact:", error.response?.data || error.message);
 
@@ -102,7 +99,7 @@ function Contact() {
   return (
     <section className="contact-section" id="Contact">
       <div className="container">
-        {/* Form */}
+        {/* LEFT FORM BOX */}
         <div className="contact-form-box">
           <h2 className="form-title">Enquiry</h2>
           <p className="form-subtitle">
@@ -110,73 +107,85 @@ function Contact() {
           </p>
 
           <form className="contact-form" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Name"
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="Email Id"
-              required
-            />
-            <input
-              type="tel"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="Phone no."
-            />
+            <div className="form-group">
+              <input
+                type="text"
+                name="Name"
+                value={form.Name}
+                onChange={handleChange}
+                placeholder="Name"
+                required
+              />
+            </div>
 
-            <div className="radio-group">
+            <div className="form-group">
+              <input
+                type="email"
+                name="Email"
+                value={form.Email}
+                onChange={handleChange}
+                placeholder="Email Id"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <input
+                type="tel"
+                name="PhoneNumber"
+                value={form.PhoneNumber}
+                onChange={handleChange}
+                placeholder="Phone no."
+              />
+            </div>
+
+            <div className="form-group radio-group">
               <label>Want to</label>
               <label>
                 <input
                   type="radio"
-                  name="action"
+                  name="Action"
                   value="buy"
-                  checked={form.action === "buy"}
+                  checked={form.Action === "buy"}
                   onChange={handleChange}
                 />
-                Buy
+                <span> Buy </span>
               </label>
               <label>
                 <input
                   type="radio"
-                  name="action"
+                  name="Action"
                   value="sell"
-                  checked={form.action === "sell"}
+                  checked={form.Action === "sell"}
                   onChange={handleChange}
                 />
-                Sell
+                <span> Sell </span>
               </label>
             </div>
 
-            <textarea
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              placeholder="Write here"
-              required
-            />
+            <div className="form-group">
+              <textarea
+                name="Message"
+                value={form.Message}
+                onChange={handleChange}
+                placeholder="Write here"
+                required
+              />
+            </div>
 
-            <button type="submit" disabled={loading}>
-              {loading ? "Sending..." : "Submit"}
-            </button>
+            <div className="btn-container">
+              <button type="submit" className="btn-submit" disabled={loading}>
+                {loading ? "Sending..." : "Submit"}
+              </button>
+            </div>
           </form>
         </div>
 
-        {/* Info Box */}
+        {/* RIGHT INFO BOX */}
         <div className="contact-info">
-          <img src={logo} alt="Aha Rasam" />
-          <h3>Aha! Rasam</h3>
-          <p>
+          <img src={logo} alt="Aha Rasam" className="company-logo" />
+          <h3 className="company-name">Aha! Rasam</h3>
+          <p className="company-address">
             Gut No. 65, Property No. 317, Siddheshwar BK, Pali - Bhira Road,
             <br />
             Taluka Sudhagad, District Raigarh, Maharashtra,
