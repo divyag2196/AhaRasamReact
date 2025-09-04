@@ -20,23 +20,44 @@ function Contact() {
     message: "",
   });
 
+  // Handle input changes
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // ✅ Strapi v5 expects { data: {...} }
-      const res = await axios.post("https://beautiful-festival-b6c8d86f22.strapiapp.com/api/contacts", {
-        data: {
-          ...form,
-          publishedAt: new Date().toISOString(), // ensures auto-publish
-        },
+
+    // Basic validation
+    if (!form.name || !form.email || !form.message) {
+      setModal({
+        show: true,
+        success: false,
+        title: "Validation Error",
+        message: "Please fill all required fields!",
       });
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "https://beautiful-festival-b6c8d86f22.strapiapp.com/api/contacts",
+        {
+          data: {
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            action: form.action,
+            message: form.message,
+            publishedAt: new Date().toISOString(), // auto-publish
+          },
+        }
+      );
 
       console.log("Saved in Strapi:", res.data);
 
+      // Show success modal
       setModal({
         show: true,
         success: true,
@@ -44,9 +65,11 @@ function Contact() {
         message: "Thank you! Your enquiry has been saved.",
       });
 
+      // Reset form
       setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
     } catch (error) {
       console.error("Save failed:", error.response?.data || error.message);
+
       setModal({
         show: true,
         success: false,
@@ -95,7 +118,6 @@ function Contact() {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                required
                 placeholder="Phone no."
               />
             </div>
