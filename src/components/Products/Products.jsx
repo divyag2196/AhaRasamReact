@@ -64,7 +64,7 @@ const Products = () => {
     <div className="products-grid container">
       <h2>Products</h2>
 
-      <div className="products-container d-flex flex-wrap">
+      <div className="products-container d-flex ">
         {products.map((product) => {
           // ✅ Image (full URL already in Strapi response)
           const imgUrl = product.Image?.url || "https://placehold.co/300";
@@ -80,24 +80,31 @@ const Products = () => {
               {product.Variant?.map((v, idx) => (
                 <div key={idx} className="variant-row">
                   <span>
+                    {v.size} 
+                  </span>
+                  {/* with price 
+                  <span>
                     {v.size} – ₹{v.price}
-                  </span>
+                  </span> */}
                   <button className="trash-btn">🗑</button>
-                  <button
-                    className="qty-btn"
-                    onClick={() => handleQtyChange(product.id, idx, -1)}
-                  >
-                    -
-                  </button>
-                  <span className="qty-value">
-                    {quantities[product.id]?.[idx] || 0}
-                  </span>
-                  <button
-                    className="qty-btn"
-                    onClick={() => handleQtyChange(product.id, idx, 1)}
-                  >
-                    +
-                  </button>
+                  <div className="varqty-sec">
+                    <button
+                      className="qty-btn"
+                      onClick={() => handleQtyChange(product.id, idx, -1)}
+                    >
+                      -
+                    </button>
+                    <span className="qty-value">
+                      {quantities[product.id]?.[idx] || 0}
+                    </span>
+                    <button
+                      className="qty-btn"
+                      onClick={() => handleQtyChange(product.id, idx, 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  
                 </div>
               ))}
               
@@ -109,6 +116,7 @@ const Products = () => {
                 Proceed to Pay
               </button>
               </div>
+              <hr></hr>
 
               {/* ✅ Ingredients Section */}
               {product.Ingredients?.length > 0 && (

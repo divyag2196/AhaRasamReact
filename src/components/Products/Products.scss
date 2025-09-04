@@ -116,6 +116,19 @@
       }
     }
 
+    .process-ctn-cls{
+      display: flex;
+      justify-content: flex-end;
+      .proceed-btn{
+        border-radius: 20px;
+        background-color: #E1AD3F;
+        &:hover{
+          background: #c9302c;
+
+        }
+      }
+    }
+
     .ingredients,
     .howto {
       margin-top: 1.5rem;
