@@ -44,7 +44,7 @@
     .variant-row {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       gap: 0.6rem;
       margin-bottom: 0.8rem;
 
@@ -72,8 +72,8 @@
       }
 
       .qty-btn {
-        background: #f5f5f5;
-        border: 1px solid #ddd;
+        background: #E1AD3F;
+        // border: 1px solid #ddd;
         border-radius: 6px;
         width: 32px;
         height: 32px;
@@ -120,6 +120,7 @@
       display: flex;
       justify-content: flex-end;
       .proceed-btn{
+        border-width: 0;
         border-radius: 20px;
         background-color: #E1AD3F;
         &:hover{

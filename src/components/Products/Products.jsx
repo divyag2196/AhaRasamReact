@@ -86,23 +86,25 @@ const Products = () => {
                   <span>
                     {v.size} – ₹{v.price}
                   </span> */}
-                  <button className="trash-btn">🗑</button>
-                  <div className="varqty-sec">
-                    <button
-                      className="qty-btn"
-                      onClick={() => handleQtyChange(product.id, idx, -1)}
-                    >
-                      -
-                    </button>
-                    <span className="qty-value">
-                      {quantities[product.id]?.[idx] || 0}
-                    </span>
-                    <button
-                      className="qty-btn"
-                      onClick={() => handleQtyChange(product.id, idx, 1)}
-                    >
-                      +
-                    </button>
+                  <div>
+                    <button className="trash-btn">🗑</button>
+                    <div className="varqty-sec">
+                      <button
+                        className="qty-btn"
+                        onClick={() => handleQtyChange(product.id, idx, -1)}
+                      >
+                        -
+                      </button>
+                      <span className="qty-value">
+                        {quantities[product.id]?.[idx] || 0}
+                      </span>
+                      <button
+                        className="qty-btn"
+                        onClick={() => handleQtyChange(product.id, idx, 1)}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                   
                 </div>
