@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Modal from "../Modal/Modal"; // Make sure you have your Modal component
+import Modal from "../Modal/Modal"; 
 import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
@@ -20,17 +20,21 @@ function Contact() {
     message: "",
   });
 
-  // Update state on input change
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  // Submit form
+  const validateForm = () => {
+    return form.name.trim() && form.email.trim() && form.message.trim();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.name || !form.email || !form.message) {
+    if (!validateForm()) {
       setModal({
         show: true,
         success: false,
@@ -40,19 +44,14 @@ function Contact() {
       return;
     }
 
-    // Payload for Strapi Cloud v5
     const payload = {
       data: {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        action: form.action,
-        message: form.message,
-        publishedAt: new Date().toISOString(), // auto-publish
+        ...form,
+        publishedAt: new Date().toISOString(), // Strapi auto-publish
       },
     };
 
-    console.log("Sending payload to Strapi:", payload);
+    setLoading(true);
 
     try {
       const res = await axios.post(
@@ -62,12 +61,12 @@ function Contact() {
           headers: {
             "Content-Type": "application/json",
             Authorization:
-              "Bearer fb4f79cc58081c6ccc735d86a012f47217ceb6e25bece384533b3c5a2281796bc6cd836cfdb6dcd94ed83d59461c2bda92694ef2ef538472895c3fb4e76e9580cecafdfd59cc83fc812fadc5cbb55b3651df9c5a64d7bc6f4071543a9478cb2a90e00f39878eafe15dabcb8e21a84447929f654af52b001385007348a0563713",
+              "Bearer fb4f79cc58081c6ccc735d86a012f47217ceb6e25bece384533b3c5a2281796bc6cd836cfdb6dcd94ed83d59461c2bda92694ef2ef538472895c3fb4e76e9580cecafdfd59cc83fc812fadc5cbb55b3651df9c5a64d7bc6f4071543a9478cb2a90e00f39878eafe15dabcb8e21a84447929f654af52b001385007348a0563713", // replace with your token
           },
         }
       );
 
-      console.log("Response from Strapi:", res.data);
+      console.log("Strapi response:", res.data);
 
       setModal({
         show: true,
@@ -76,10 +75,9 @@ function Contact() {
         message: "Thank you! Your enquiry has been saved.",
       });
 
-      // Reset form
       setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
     } catch (error) {
-      console.error("Save failed:", error.response?.data || error.message);
+      console.error("Error saving contact:", error.response?.data || error.message);
 
       setModal({
         show: true,
@@ -87,6 +85,8 @@ function Contact() {
         title: "Oops!",
         message: "Something went wrong. Please try again later.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,8 +168,8 @@ function Contact() {
             </div>
 
             <div className="btn-container">
-              <button type="submit" className="btn-submit">
-                Submit
+              <button type="submit" className="btn-submit" disabled={loading}>
+                {loading ? "Sending..." : "Submit"}
               </button>
             </div>
           </form>
