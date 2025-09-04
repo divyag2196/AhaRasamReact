@@ -70,7 +70,7 @@ const Products = () => {
           const imgUrl = product.Image?.url || "https://placehold.co/300";
 
           return (
-            <div key={product.id} className="product-card col-12 col-lg-4">
+            <div key={product.id} className="product-card col-sm-12 col-md-4">
               <h3>{product.Title}</h3>
 
               {/* ✅ Display product image */}
@@ -100,13 +100,15 @@ const Products = () => {
                   </button>
                 </div>
               ))}
-
+              
+              <div className="process-ctn-cls">
               <button
                 className="proceed-btn"
                 onClick={() => handleAddToCart(product.id, product)}
               >
                 Proceed to Pay
               </button>
+              </div>
 
               {/* ✅ Ingredients Section */}
               {product.Ingredients?.length > 0 && (
