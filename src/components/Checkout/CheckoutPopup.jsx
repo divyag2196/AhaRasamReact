@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { postDataToApi } from "../../utils/Api";
 
 const CheckoutPopup = ({ cartData, onClose }) => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    contact: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", contact: "" });
 
-  // Calculate total cart value
-  const totalAmount = cartData.reduce(
-    (sum, item) => sum + item.price * item.qty,
-    0
-  );
+  const totalAmount = cartData.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,19 +13,16 @@ const CheckoutPopup = ({ cartData, onClose }) => {
 
   const createOrder = async () => {
     try {
-      // Step 1: Call Strapi backend to create Razorpay order
+      // Step 1: Ask backend to create Razorpay order
       const res = await axios.post(
-        "http://localhost:1337/api/create-razorpay-order",
-        {
-          amount: totalAmount, // backend converts to paise
-        }
+        `${process.env.REACT_APP_STRAPI_URL}/api/create-razorpay-order`,
+        { amount: totalAmount }
       );
-
       const { razorpayOrder } = res.data;
 
-      // Step 2: Open Razorpay Checkout
+      // Step 2: Razorpay Checkout
       const options = {
-        key: "rzp_test_R5AxLBFpboBciJ", // 🔑 Replace with your Razorpay test key
+        key: process.env.REACT_APP_RAZORPAY_KEY,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: "Aha Rasam",
@@ -40,21 +30,19 @@ const CheckoutPopup = ({ cartData, onClose }) => {
         order_id: razorpayOrder.id,
         handler: async function (response) {
           try {
-            // Step 3: Verify payment & store order in Strapi
-            await axios.post("http://localhost:1337/api/verify-payment", {
+            // Step 3: Save order in Strapi Orders collection
+            const orderPayload = {
+              customerName: form.name,
+              email: form.email,
+              phoneNumber: form.contact,
+              items: cartData,
+              totalAmount: totalAmount,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              userData: {
-                name: form.name,
-                email: form.email,
-                contact: form.contact,
-                productName: cartData
-                  .map((i) => `${i.productName} (${i.size})`)
-                  .join(", "),
-                amount: totalAmount,
-              },
-            });
+            };
+
+            await postDataToApi("/api/orders", { data: orderPayload });
 
             alert("✅ Payment Verified & Order Saved!");
             localStorage.removeItem("cartList");
@@ -95,28 +83,9 @@ const CheckoutPopup = ({ cartData, onClose }) => {
         </ul>
         <h3>Total: ₹{totalAmount}</h3>
 
-        {/* Customer Form */}
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter Name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          value={form.email}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="contact"
-          placeholder="Enter Contact"
-          value={form.contact}
-          onChange={handleChange}
-        />
+        <input type="text" name="name" placeholder="Enter Name" value={form.name} onChange={handleChange} />
+        <input type="email" name="email" placeholder="Enter Email" value={form.email} onChange={handleChange} />
+        <input type="text" name="contact" placeholder="Enter Contact" value={form.contact} onChange={handleChange} />
 
         <button onClick={createOrder}>Pay Now</button>
         <button onClick={onClose}>Cancel</button>
