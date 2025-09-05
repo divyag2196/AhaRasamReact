@@ -5,7 +5,7 @@ import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
-  // Use Strapi API field names directly
+  // Strapi API field names directly
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -45,17 +45,8 @@ function Contact() {
       return;
     }
 
-    const payload = {
-      data: {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        action: form.action,
-        message: form.message,
-      },
-    };
+    const payload = { data: form };
 
-    // 🟢 Debug logs
     console.log("Form state before submit:", form);
     console.log("Payload being sent to Strapi:", JSON.stringify(payload, null, 2));
 
@@ -68,8 +59,6 @@ function Contact() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer fb4f79cc58081c6ccc735d86a012f47217ceb6e25bece384533b3c5a2281796bc6cd836cfdb6dcd94ed83d59461c2bda92694ef2ef538472895c3fb4e76e9580cecafdfd59cc83fc812fadc5cbb55b3651df9c5a64d7bc6f4071543a9478cb2a90e00f39878eafe15dabcb8e21a84447929f654af52b001385007348a0563713", // ⬅️ replace with your token
           },
         }
       );
