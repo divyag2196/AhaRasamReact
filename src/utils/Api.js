@@ -18,7 +18,7 @@ import { data } from "react-router-dom";
 export const fetchDataFromApi = async (url) => {
   try {
     const { data } = await axios.get(
-      process.env.REACT_APP_DEV_URL + url
+      process.env.REACT_APP_STRAPI_URL + url
       // params
     );
     console.log("✅ API response:", data);
