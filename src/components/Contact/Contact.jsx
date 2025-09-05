@@ -5,7 +5,7 @@ import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
-  // Use Strapi field names directly in state
+  // Use Strapi API field names directly
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -73,6 +73,7 @@ function Contact() {
         message: "Thank you! Your enquiry has been saved.",
       });
 
+      // Reset form
       setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
     } catch (error) {
       console.error("Error saving contact:", error.response?.data || error.message);
