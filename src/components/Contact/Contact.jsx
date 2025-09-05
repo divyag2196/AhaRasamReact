@@ -47,11 +47,11 @@ function Contact() {
 
     const payload = {
       data: {
-        Name: form.Name,
-        Email: form.Email,
-        PhoneNumber: form.PhoneNumber || "",
-        Action: form.Action,
-        Message: form.Message,
+        name: form.Name,
+        email: form.Email,
+        phone: form.PhoneNumber || "",
+        action: form.Action,
+        message: form.Message,
       },
     };
 
