@@ -60,11 +60,12 @@ function Contact() {
 
     try {
       const res = await axios.post(
-        "https://beautiful-festival-b6c8d86f22.strapiapp.com/api/contacts",
+       `${process.env.REACT_APP_STRAPI_URL}/api/contacts`,
         payload,
         {
           headers: {
             "Content-Type": "application/json",
+             Authorization: `Bearer ${process.env.REACT_APP_STRAPI_TOKEN}`,
             // 🔑 If using API Token, uncomment below:
             // "Authorization": `Bearer YOUR_API_TOKEN`
           },
