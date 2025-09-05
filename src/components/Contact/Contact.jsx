@@ -5,7 +5,6 @@ import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
-  // Strapi API field names directly
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -45,7 +44,14 @@ function Contact() {
       return;
     }
 
-    const payload = { data: form };
+    // ✅ Strapi v5 requires flat JSON, not { data: {...} }
+    const payload = {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      action: form.action,
+      message: form.message,
+    };
 
     console.log("Form state before submit:", form);
     console.log("Payload being sent to Strapi:", JSON.stringify(payload, null, 2));
@@ -59,6 +65,8 @@ function Contact() {
         {
           headers: {
             "Content-Type": "application/json",
+            // 🔑 If using API Token, uncomment below:
+            // "Authorization": `Bearer YOUR_API_TOKEN`
           },
         }
       );
