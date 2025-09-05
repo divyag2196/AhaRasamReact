@@ -5,13 +5,13 @@ import "./Contact.scss";
 import logo from "../../assets/contactsection.png";
 
 function Contact() {
-  // Make sure these match your Strapi collection field names exactly
+  // Use Strapi field names directly in state
   const [form, setForm] = useState({
-    Name: "",
-    Email: "",
-    PhoneNumber: "",
-    Action: "buy",
-    Message: "",
+    name: "",
+    email: "",
+    phone: "",
+    action: "buy",
+    message: "",
   });
 
   const [modal, setModal] = useState({
@@ -29,7 +29,7 @@ function Contact() {
   };
 
   const validateForm = () => {
-    return form.Name.trim() && form.Email.trim() && form.Message.trim();
+    return form.name.trim() && form.email.trim() && form.message.trim();
   };
 
   const handleSubmit = async (e) => {
@@ -45,15 +45,7 @@ function Contact() {
       return;
     }
 
-    const payload = {
-      data: {
-        name: form.Name,
-        email: form.Email,
-        phone: form.PhoneNumber || "",
-        action: form.Action,
-        message: form.Message,
-      },
-    };
+    const payload = { data: form };
 
     console.log("Sending payload to Strapi:", JSON.stringify(payload, null, 2));
 
@@ -81,7 +73,7 @@ function Contact() {
         message: "Thank you! Your enquiry has been saved.",
       });
 
-      setForm({ Name: "", Email: "", PhoneNumber: "", Action: "buy", Message: "" });
+      setForm({ name: "", email: "", phone: "", action: "buy", message: "" });
     } catch (error) {
       console.error("Error saving contact:", error.response?.data || error.message);
 
@@ -110,8 +102,8 @@ function Contact() {
             <div className="form-group">
               <input
                 type="text"
-                name="Name"
-                value={form.Name}
+                name="name"
+                value={form.name}
                 onChange={handleChange}
                 placeholder="Name"
                 required
@@ -121,8 +113,8 @@ function Contact() {
             <div className="form-group">
               <input
                 type="email"
-                name="Email"
-                value={form.Email}
+                name="email"
+                value={form.email}
                 onChange={handleChange}
                 placeholder="Email Id"
                 required
@@ -132,8 +124,8 @@ function Contact() {
             <div className="form-group">
               <input
                 type="tel"
-                name="PhoneNumber"
-                value={form.PhoneNumber}
+                name="phone"
+                value={form.phone}
                 onChange={handleChange}
                 placeholder="Phone no."
               />
@@ -144,9 +136,9 @@ function Contact() {
               <label>
                 <input
                   type="radio"
-                  name="Action"
+                  name="action"
                   value="buy"
-                  checked={form.Action === "buy"}
+                  checked={form.action === "buy"}
                   onChange={handleChange}
                 />
                 <span> Buy </span>
@@ -154,9 +146,9 @@ function Contact() {
               <label>
                 <input
                   type="radio"
-                  name="Action"
+                  name="action"
                   value="sell"
-                  checked={form.Action === "sell"}
+                  checked={form.action === "sell"}
                   onChange={handleChange}
                 />
                 <span> Sell </span>
@@ -165,8 +157,8 @@ function Contact() {
 
             <div className="form-group">
               <textarea
-                name="Message"
-                value={form.Message}
+                name="message"
+                value={form.message}
                 onChange={handleChange}
                 placeholder="Write here"
                 required
