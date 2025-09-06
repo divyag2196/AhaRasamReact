@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { postDataToApi } from "../../utils/Api";
 
 const CheckoutPopup = ({ cartData, onClose }) => {
   const [form, setForm] = useState({ name: "", email: "", contact: "" });
 
-  const totalAmount = cartData.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const totalAmount = cartData.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -12,28 +16,64 @@ const CheckoutPopup = ({ cartData, onClose }) => {
 
   const createOrder = async () => {
     try {
-      // Save order directly in Strapi as "pending"
-      const orderPayload = {
-        customerName: form.name,
-        email: form.email,
-        phoneNumber: form.contact,
-        items: cartData,
-        total: totalAmount,
-        status: "pending", // always start with pending
+      // Step 1: Ask backend to create Razorpay order
+      const res = await axios.post(
+        `${process.env.REACT_APP_STRAPI_URL}/api/create-razorpay-order`,
+        { amount: totalAmount }
+      );
+
+      const { razorpayOrder } = res.data;
+
+      // Step 2: Razorpay Checkout Options
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY, // from env
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: "Aha Rasam",
+        description: "Order Payment",
+        order_id: razorpayOrder.id,
+        handler: async function (response) {
+          try {
+            // Step 3: Save order in Strapi
+            const orderPayload = {
+              customerName: form.name,
+              email: form.email,
+              phoneNumber: form.contact,
+              items: cartData,
+              total: totalAmount,
+              status: "paid", // ✅ payment successful
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            };
+
+            await postDataToApi("/api/orders", { data: orderPayload });
+
+            alert("✅ Payment successful & order saved!");
+            localStorage.removeItem("cartList");
+            window.location.href = "/?thankyou=true";
+          } catch (err) {
+            console.error("Order save error:", err);
+            alert("Payment captured but failed to save order.");
+          }
+        },
+        prefill: {
+          name: form.name,
+          email: form.email,
+          contact: form.contact,
+        },
+        theme: {
+          color: "#3399cc",
+        },
       };
 
-      await postDataToApi("/api/orders", { data: orderPayload });
-
-      alert("✅ Order saved successfully! (Pending status)");
-      localStorage.removeItem("cartList");
-      window.location.href = "/?thankyou=true";
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
-      console.error("Order save error:", err);
-      alert("❌ Failed to save order.");
+      console.error("Payment error:", err);
+      alert("❌ Failed to create Razorpay order");
     }
   };
-
-  console.log("🛒 CheckoutPopup received cartData:", cartData);
 
   return (
     <div className="popup-overlay">
@@ -72,8 +112,8 @@ const CheckoutPopup = ({ cartData, onClose }) => {
           onChange={handleChange}
         />
 
-        <button onClick={createOrder}>Place Order</button>
-        <button onClick={onClose}>Cancel Order</button>
+        <button onClick={createOrder}>Pay Now</button>
+        <button onClick={onClose}>Cancel</button>
       </div>
     </div>
   );
