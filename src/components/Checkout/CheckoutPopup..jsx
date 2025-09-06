@@ -73,7 +73,7 @@ const CheckoutPopup = ({ cartData, onClose }) => {
         />
 
         <button onClick={createOrder}>Place Order</button>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={onClose}>Cancel Order</button>
       </div>
     </div>
   );
