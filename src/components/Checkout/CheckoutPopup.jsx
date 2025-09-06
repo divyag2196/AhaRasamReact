@@ -5,10 +5,7 @@ import { postDataToApi } from "../../utils/Api";
 const CheckoutPopup = ({ cartData, onClose }) => {
   const [form, setForm] = useState({ name: "", email: "", contact: "" });
 
-  const totalAmount = cartData.reduce(
-    (sum, item) => sum + item.price * item.qty,
-    0
-  );
+  const totalAmount = cartData.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,17 +13,23 @@ const CheckoutPopup = ({ cartData, onClose }) => {
 
   const createOrder = async () => {
     try {
-      // Step 1: Ask backend to create Razorpay order
+      // 1️⃣ Ask Strapi to create Razorpay order + pending Strapi order
       const res = await axios.post(
-        `${process.env.REACT_APP_STRAPI_URL}/api/create-razorpay-order`,
-        { amount: totalAmount }
+        `${process.env.REACT_APP_STRAPI_URL}/api/orders/create-razorpay-order`,
+        {
+          amount: totalAmount,
+          customerName: form.name,
+          email: form.email,
+          phoneNumber: form.contact,
+          items: cartData,
+        }
       );
 
-      const { razorpayOrder } = res.data;
+      const { razorpayOrder, strapiOrder } = res.data;
 
-      // Step 2: Razorpay Checkout Options
+      // 2️⃣ Razorpay Checkout Options
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY, // from env
+        key: process.env.REACT_APP_RAZORPAY_KEY, // frontend Razorpay key
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: "Aha Rasam",
@@ -34,27 +37,21 @@ const CheckoutPopup = ({ cartData, onClose }) => {
         order_id: razorpayOrder.id,
         handler: async function (response) {
           try {
-            // Step 3: Save order in Strapi
-            const orderPayload = {
-              customerName: form.name,
-              email: form.email,
-              phoneNumber: form.contact,
-              items: cartData,
-              total: totalAmount,
-              status: "paid", // ✅ payment successful
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            };
-
-            await postDataToApi("/api/orders", { data: orderPayload });
+            // 3️⃣ Update order in Strapi as "paid"
+            await postDataToApi(`/api/orders/${strapiOrder.id}`, {
+              data: {
+                status: "paid",
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              },
+            });
 
             alert("✅ Payment successful & order saved!");
             localStorage.removeItem("cartList");
             window.location.href = "/?thankyou=true";
           } catch (err) {
-            console.error("Order save error:", err);
-            alert("Payment captured but failed to save order.");
+            console.error("Verification error:", err);
+            alert("⚠️ Payment captured, but failed to update order.");
           }
         },
         prefill: {
@@ -62,9 +59,7 @@ const CheckoutPopup = ({ cartData, onClose }) => {
           email: form.email,
           contact: form.contact,
         },
-        theme: {
-          color: "#3399cc",
-        },
+        theme: { color: "#3399cc" },
       };
 
       const rzp = new window.Razorpay(options);
