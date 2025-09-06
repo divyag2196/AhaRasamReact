@@ -33,7 +33,7 @@ const Cart = () => {
             <button onClick={() => setShowCheckout(true)}>Proceed to Pay</button>
           </>
         )}
-
+        {console.log("🛒 Data sent to CheckoutPopup:", cart)}
         {showCheckout && (
           <CheckoutPopup
             cartData={cart}

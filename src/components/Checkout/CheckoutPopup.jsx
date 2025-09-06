@@ -67,7 +67,7 @@ const CheckoutPopup = ({ cartData, onClose }) => {
       alert("❌ Failed to create Razorpay order");
     }
   };
-
+console.log("🛒 CheckoutPopup received cartData:", cartData);
   return (
     <div className="popup-overlay">
       <div className="popup-content">
